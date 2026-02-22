@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django 常用命令文档</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f5f5;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* 左侧菜单栏 */
+        .sidebar {
+            width: 280px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            overflow-y: auto;
+            flex-shrink: 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #1a252f;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-top: 5px;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 10px 0;
+        }
+
+        .menu-item {
+            margin: 2px 0;
+        }
+
+        .menu-link {
+            display: block;
+            padding: 12px 20px;
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            font-size: 14px;
+        }
+
+        .menu-link:hover {
+            background: #34495e;
+            color: #fff;
+            border-left-color: #3498db;
+        }
+
+        .menu-link.active {
+            background: #34495e;
+            color: #fff;
+            border-left-color: #3498db;
+        }
+
+        .menu-category {
+            padding: 15px 20px 10px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #7f8c8d;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* 右侧内容区 */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            background: #fff;
+            padding: 40px;
+        }
+
+        .content-section {
+            max-width: 900px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .content-section h2 {
+            color: #2c3e50;
+            font-size: 32px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .content-section h3 {
+            color: #34495e;
+            font-size: 22px;
+            margin: 30px 0 15px;
+        }
+
+        .content-section h4 {
+            color: #555;
+            font-size: 18px;
+            margin: 25px 0 10px;
+        }
+
+        .content-section p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .command-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            font-family: "Consolas", "Monaco", monospace;
+            position: relative;
+        }
+
+        .command-block code {
+            color: #e83e8c;
+            font-size: 14px;
+        }
+
+        .command-block .comment {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .command-block:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background: #2980b9;
+        }
+
+        .tip-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .tip-box.warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+
+        .tip-box.danger {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+
+        .tip-box strong {
+            color: #155724;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .param-name {
+            color: #e83e8c;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .back-to-top:hover {
+            background: #2980b9;
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 左侧菜单 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>🐍 Django 命令大全</h1>
+                <p>常用命令速查手册</p>
+            </div>
+            <ul class="menu">
+                <li class="menu-category">项目基础</li>
+                <li class="menu-item">
+                    <a href="#create-project" class="menu-link active" onclick="showSection('create-project')">创建项目</a>
+                </li>
+                <li class="menu-item">
+                    <a href="#create-app" class="menu-link" onclick="showSection('create-app')">创建应用</a>
+                </li>
+                <li class="menu-item">
+                    <a href="#runserver" class="menu-link" onclick="showSection('runserver')">开发服务器</a>
+                </li>
+
+                <li class="menu-category">数据库操作</li>
+                <li class="menu-item">
+                    <a href="#migrations" class="menu-link" onclick="showSection('migrations')">迁移命令</a>
+                </li>
+                <li class="menu-item">
+                    <a href="#dbshell" class="menu-link" onclick="showSection('dbshell')">数据库Shell</a>
+                </li>
+                <li class="menu-item">
+                    <a href="#dumpdata" class="menu-link" onclick="showSection('dumpdata')">数据导入导出</a>
+                </li>
+
+                <li class="menu-category">管理员操作</li>
+                <li class="menu-item">
+                    <a href="#createsuperuser" class="menu-link" onclick="showSection('createsuperuser')">创建超级用户</a>
+                </li>
+                <li class="menu-item">
+                    <a href="#changepassword" class="menu-link" onclick="showSection('changepassword')">修改密码</a>
+                </li>
+
+                <li class="menu-category">调试测试</li>
+                <li class="menu-item">
+                    <a href="#shell" class="menu-link" onclick="showSection('shell')">Django Shell</a>
+                </li>
+                <li class="menu-item">
+                    <a href="#test" class="menu-link" onclick="showSection('test')">测试命令</a>
+                </li>
+                <li class="menu-item">
+                    <a href="#check" class="menu-link" onclick="showSection('check')">系统检查</a>
+                </li>
+
+                <li class="menu-category">静态文件</li>
+                <li class="menu-item">
+                    <a href="#static" class="menu-link" onclick="showSection('static')">收集静态文件</a>
+                </li>
+
+                <li class="menu-category">其他工具</li>
+                <li class="menu-item">
+                    <a href="#startapp" class="menu-link" onclick="showSection('startapp')">模板应用</a>
+                </li>
+                <li class="menu-item">
+                    <a href="#compilemessages" class="menu-link" onclick="showSection('compilemessages')">国际化</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- 右侧内容 -->
+        <main class="content">
+            <!-- 创建项目 -->
+            <section id="create-project" class="content-section active">
+                <h2>创建 Django 项目</h2>
+                <p>开始一个新的 Django 项目，包含基础配置和目录结构。</p>
+                
+                <h3>基础命令</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>django-admin startproject 项目名称</code>
+                </div>
+
+                <h3>常用示例</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>django-admin startproject mysite</code><br>
+                    <span class="comment"># 在当前目录创建 mysite 项目文件夹</span>
+                </div>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>django-admin startproject mysite .</code><br>
+                    <span class="comment"># 在当前目录直接创建项目（不创建额外文件夹）</span>
+                </div>
+
+                <div class="tip-box">
+                    <strong>💡 提示：</strong> 建议先创建项目目录，进入后再执行命令，保持工作区整洁。
+                </div>
+
+                <h3>项目结构</h3>
+                <div class="command-block">
+                    <span class="comment">mysite/</span><br>
+                    <span class="comment">├── manage.py</span> <span class="comment"># 命令行工具</span><br>
+                    <span class="comment">└── mysite/</span> <span class="comment"># 项目配置目录</span><br>
+                    <span class="comment">    ├── __init__.py</span><br>
+                    <span class="comment">    ├── settings.py</span> <span class="comment"># 配置文件</span><br>
+                    <span class="comment">    ├── urls.py</span> <span class="comment"># 路由配置</span><br>
+                    <span class="comment">    ├── asgi.py</span> <span class="comment"># ASGI配置</span><br>
+                    <span class="comment">    └── wsgi.py</span> <span class="comment"># WSGI配置</span>
+                </div>
+            </section>
+
+            <!-- 创建应用 -->
+            <section id="create-app" class="content-section">
+                <h2>创建 Django 应用</h2>
+                <p>在项目中创建新的应用（App），每个应用负责一个功能模块。</p>
+                
+                <h3>基础命令</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py startapp 应用名称</code>
+                </div>
+
+                <h3>常用示例</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py startapp blog</code><br>
+                    <span class="comment"># 创建 blog 应用</span>
+                </div>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py startapp users</code><br>
+                    <span class="comment"># 创建 users 应用（用户管理）</span>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意：</strong> 创建应用后，必须在 <code>settings.py</code> 的 <code>INSTALLED_APPS</code> 中注册！
+                </div>
+
+                <h3>应用结构</h3>
+                <div class="command-block">
+                    <span class="comment">blog/</span><br>
+                    <span class="comment">├── __init__.py</span><br>
+                    <span class="comment">├── admin.py</span> <span class="comment"># 后台管理配置</span><br>
+                    <span class="comment">├── apps.py</span> <span class="comment"># 应用配置</span><br>
+                    <span class="comment">├── models.py</span> <span class="comment"># 数据模型</span><br>
+                    <span class="comment">├── tests.py</span> <span class="comment"># 测试文件</span><br>
+                    <span class="comment">└── views.py</span> <span class="comment"># 视图逻辑</span>
+                </div>
+            </section>
+
+            <!-- 开发服务器 -->
+            <section id="runserver" class="content-section">
+                <h2>启动开发服务器</h2>
+                <p>启动 Django 内置的开发服务器，用于本地开发和测试。</p>
+                
+                <h3>基础命令</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py runserver</code>
+                </div>
+
+                <h3>常用参数</h3>
+                <table>
+                    <tr>
+                        <th>参数</th>
+                        <th>说明</th>
+                        <th>示例</th>
+                    </tr>
+                    <tr>
+                        <td class="param-name">[端口]</td>
+                        <td>指定端口号（默认8000）</td>
+                        <td><code>runserver 8080</code></td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">[IP:端口]</td>
+                        <td>指定IP和端口</td>
+                        <td><code>runserver 0.0.0.0:8000</code></td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--noreload</td>
+                        <td>禁用自动重载（提高性能）</td>
+                        <td><code>runserver --noreload</code></td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--nothreading</td>
+                        <td>禁用多线程</td>
+                        <td><code>runserver --nothreading</code></td>
+                    </tr>
+                </table>
+
+                <h3>常用示例</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py runserver 8080</code><br>
+                    <span class="comment"># 使用8080端口</span>
+                </div>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py runserver 0.0.0.0:8000</code><br>
+                    <span class="comment"># 允许局域网其他设备访问</span>
+                </div>
+
+                <div class="tip-box danger">
+                    <strong>🚫 警告：</strong> 开发服务器仅用于开发环境，生产环境请使用 Gunicorn/uWSGI + Nginx。
+                </div>
+            </section>
+
+            <!-- 迁移命令 -->
+            <section id="migrations" class="content-section">
+                <h2>数据库迁移</h2>
+                <p>管理数据库架构变更，同步模型定义到数据库。</p>
+                
+                <h3>核心命令</h3>
+                
+                <h4>1. 生成迁移文件</h4>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py makemigrations</code><br>
+                    <span class="comment"># 检测模型变化，生成迁移文件</span>
+                </div>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py makemigrations appname</code><br>
+                    <span class="comment"># 只为指定应用生成迁移</span>
+                </div>
+
+                <h4>2. 执行迁移</h4>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py migrate</code><br>
+                    <span class="comment"># 执行所有未应用的迁移</span>
+                </div>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py migrate appname</code><br>
+                    <span class="comment"># 只迁移指定应用</span>
+                </div>
+
+                <h4>3. 查看迁移状态</h4>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py showmigrations</code><br>
+                    <span class="comment"># 显示所有应用的迁移状态</span>
+                </div>
+
+                <h4>4. 回滚迁移</h4>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py migrate appname zero</code><br>
+                    <span class="comment"># 回滚应用的所有迁移</span>
+                </div>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py migrate appname 0001</code><br>
+                    <span class="comment"># 回滚到指定迁移版本</span>
+                </div>
+
+                <div class="tip-box">
+                    <strong>💡 最佳实践：</strong><br>
+                    1. 修改模型后先执行 <code>makemigrations</code><br>
+                    2. 检查生成的迁移文件无误后再 <code>migrate</code><br>
+                    3. 不要将迁移文件删除，应使用回滚命令
+                </div>
+            </section>
+
+            <!-- 数据库Shell -->
+            <section id="dbshell" class="content-section">
+                <h2>数据库 Shell</h2>
+                <p>直接进入数据库命令行，执行原生 SQL 语句。</p>
+                
+                <h3>基础命令</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py dbshell</code>
+                </div>
+
+                <h3>支持的数据库</h3>
+                <table>
+                    <tr>
+                        <th>数据库</th>
+                        <th>说明</th>
+                    </tr>
+                    <tr>
+                        <td>SQLite</td>
+                        <td>进入 sqlite3 命令行</td>
+                    </tr>
+                    <tr>
+                        <td>MySQL</td>
+                        <td>进入 mysql 客户端</td>
+                    </tr>
+                    <tr>
+                        <td>PostgreSQL</td>
+                        <td>进入 psql 客户端</td>
+                    </tr>
+                </table>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 注意：</strong> 直接操作数据库风险较高，建议优先使用 Django ORM。
+                </div>
+            </section>
+
+            <!-- 数据导入导出 -->
+            <section id="dumpdata" class="content-section">
+                <h2>数据导入导出</h2>
+                <p>将数据库数据导出为 JSON/XML/YAML 格式，或从文件导入数据。</p>
+                
+                <h3>导出数据</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py dumpdata > data.json</code><br>
+                    <span class="comment"># 导出所有数据到 data.json</span>
+                </div>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py dumpdata appname > appname.json</code><br>
+                    <span class="comment"># 导出指定应用的数据</span>
+                </div>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py dumpdata appname.ModelName > model.json</code><br>
+                    <span class="comment"># 导出指定模型的数据</span>
+                </div>
+
+                <h3>导入数据</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py loaddata data.json</code><br>
+                    <span class="comment"># 从 JSON 文件导入数据</span>
+                </div>
+
+                <h3>常用参数</h3>
+                <table>
+                    <tr>
+                        <th>参数</th>
+                        <th>说明</th>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--format</td>
+                        <td>指定格式：json, xml, yaml</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--indent</td>
+                        <td>设置缩进空格数</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--exclude</td>
+                        <td>排除指定应用或模型</td>
+                    </tr>
+                </table>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py dumpdata --indent 2 --exclude auth --exclude contenttypes > data.json</code><br>
+                    <span class="comment"># 格式化导出，排除系统表</span>
+                </div>
+            </section>
+
+            <!-- 创建超级用户 -->
+            <section id="createsuperuser" class="content-section">
+                <h2>创建超级用户</h2>
+                <p>创建可以登录 Django 管理后台的超级管理员账号。</p>
+                
+                <h3>交互式创建</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py createsuperuser</code><br>
+                    <span class="comment"># 按提示输入用户名、邮箱、密码</span>
+                </div>
+
+                <h3>命令行参数创建（非交互）</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py createsuperuser --username admin --email admin@example.com</code>
+                </div>
+
+                <div class="tip-box">
+                    <strong>💡 提示：</strong> 密码在命令行不会显示，输入时请注意。密码长度至少8位，不能全为数字。
+                </div>
+            </section>
+
+            <!-- 修改密码 -->
+            <section id="changepassword" class="content-section">
+                <h2>修改密码</h2>
+                <p>修改指定用户的密码，无需知道原密码（管理员重置）。</p>
+                
+                <h3>基础命令</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py changepassword 用户名</code>
+                </div>
+
+                <h3>示例</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py changepassword admin</code><br>
+                    <span class="comment"># 重置 admin 用户的密码</span>
+                </div>
+            </section>
+
+            <!-- Django Shell -->
+            <section id="shell" class="content-section">
+                <h2>Django Shell</h2>
+                <p>交互式 Python 命令行，自动加载 Django 环境，可直接操作模型。</p>
+                
+                <h3>基础命令</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py shell</code>
+                </div>
+
+                <h3>增强版 Shell（推荐）</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py shell -i ipython</code><br>
+                    <span class="comment"># 使用 IPython（需先安装：pip install ipython）</span>
+                </div>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py shell -i bpython</code><br>
+                    <span class="comment"># 使用 Bpython（需先安装：pip install bpython）</span>
+                </div>
+
+                <h3>常用操作示例</h3>
+                <div class="command-block">
+                    <span class="comment"># 进入 shell 后可以直接导入模型操作</span><br>
+                    <code>>>> from blog.models import Post</code><br>
+                    <code>>>> Post.objects.all()</code><br>
+                    <code>>>> Post.objects.create(title="Hello", content="World")</code>
+                </div>
+
+                <div class="tip-box">
+                    <strong>💡 技巧：</strong> Shell 是调试和批量操作数据的利器，比写视图测试更快捷。
+                </div>
+            </section>
+
+            <!-- 测试命令 -->
+            <section id="test" class="content-section">
+                <h2>运行测试</h2>
+                <p>运行 Django 项目中的单元测试和功能测试。</p>
+                
+                <h3>基础命令</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py test</code><br>
+                    <span class="comment"># 运行所有测试</span>
+                </div>
+
+                <h3>指定测试</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py test blog</code><br>
+                    <span class="comment"># 只测试 blog 应用</span>
+                </div>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py test blog.tests.PostTestCase</code><br>
+                    <span class="comment"># 测试指定测试类</span>
+                </div>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py test blog.tests.PostTestCase.test_create_post</code><br>
+                    <span class="comment"># 测试指定方法</span>
+                </div>
+
+                <h3>常用参数</h3>
+                <table>
+                    <tr>
+                        <th>参数</th>
+                        <th>说明</th>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--verbosity</td>
+                        <td>详细程度：0(静默), 1(默认), 2(详细)</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--failfast</td>
+                        <td>首次失败时停止</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--keepdb</td>
+                        <td>保留测试数据库（加速）</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--parallel</td>
+                        <td>并行运行测试</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- 系统检查 -->
+            <section id="check" class="content-section">
+                <h2>系统检查</h2>
+                <p>检查 Django 项目的常见问题，无需运行服务器。</p>
+                
+                <h3>基础命令</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py check</code><br>
+                    <span class="comment"># 检查整个项目</span>
+                </div>
+
+                <h3>部署前检查</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py check --deploy</code><br>
+                    <span class="comment"># 检查部署配置问题（安全、性能等）</span>
+                </div>
+
+                <h3>检查指定应用</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py check blog</code>
+                </div>
+
+                <div class="tip-box warning">
+                    <strong>⚠️ 重要：</strong> 生产环境部署前务必运行 <code>check --deploy</code>，它会检查安全设置。
+                </div>
+            </section>
+
+            <!-- 静态文件 -->
+            <section id="static" class="content-section">
+                <h2>收集静态文件</h2>
+                <p>将所有应用的静态文件收集到统一目录，用于生产环境部署。</p>
+                
+                <h3>基础命令</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py collectstatic</code><br>
+                    <span class="comment"># 收集所有静态文件到 STATIC_ROOT</span>
+                </div>
+
+                <h3>常用参数</h3>
+                <table>
+                    <tr>
+                        <th>参数</th>
+                        <th>说明</th>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--noinput</td>
+                        <td>不提示确认（自动化脚本用）</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--clear</td>
+                        <td>先清空目标目录再收集</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--link</td>
+                        <td>创建符号链接而非复制（开发用）</td>
+                    </tr>
+                    <tr>
+                        <td class="param-name">--ignore</td>
+                        <td>忽略匹配文件</td>
+                    </tr>
+                </table>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>python manage.py collectstatic --noinput --clear</code><br>
+                    <span class="comment"># 生产环境常用：清空后重新收集</span>
+                </div>
+
+                <div class="tip-box danger">
+                    <strong>🚫 警告：</strong> 确保 settings.py 中已配置 <code>STATIC_ROOT</code>，否则命令会报错。
+                </div>
+            </section>
+
+            <!-- 模板应用 -->
+            <section id="startapp" class="content-section">
+                <h2>从模板创建应用</h2>
+                <p>使用自定义模板创建应用，预设目录结构和文件。</p>
+                
+                <h3>使用内置模板</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>django-admin startapp --template=/path/to/template appname</code>
+                </div>
+
+                <h3>使用远程模板</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>django-admin startapp --template=https://github.com/user/template/archive/main.zip appname</code>
+                </div>
+
+                <div class="tip-box">
+                    <strong>💡 用途：</strong> 团队开发时可创建统一的应用模板，规范项目结构。
+                </div>
+            </section>
+
+            <!-- 国际化 -->
+            <section id="compilemessages" class="content-section">
+                <h2>国际化命令</h2>
+                <p>多语言支持相关命令，用于提取、翻译和编译文本。</p>
+                
+                <h3>1. 提取翻译文本</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>django-admin makemessages -l zh_Hans</code><br>
+                    <span class="comment"># 提取中文（简体）翻译文本</span>
+                </div>
+
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>django-admin makemessages -a</code><br>
+                    <span class="comment"># 为所有语言提取</span>
+                </div>
+
+                <h3>2. 编译翻译文件</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>django-admin compilemessages</code><br>
+                    <span class="comment"># 将 .po 文件编译为 .mo 文件</span>
+                </div>
+
+                <h3>3. 创建语言文件</h3>
+                <div class="command-block">
+                    <button class="copy-btn" onclick="copyCode(this)">复制</button>
+                    <code>django-admin makemessages -l en -l zh_Hans -l ja</code>
+                </div>
+
+                <div class="tip-box">
+                    <strong>💡 注意：</strong> 执行前确保 settings.py 中已配置 <code>LOCALE_PATHS</code> 和 <code>LANGUAGE_CODE</code>。
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="back-to-top" onclick="scrollToTop()">↑</div>
+
+    <script>
+        // 显示指定章节
+        function showSection(sectionId) {
+            // 隐藏所有章节
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // 显示目标章节
+            document.getElementById(sectionId).classList.add('active');
+            
+            // 更新菜单激活状态
+            document.querySelectorAll('.menu-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 滚动到顶部
+            document.querySelector('.content').scrollTop = 0;
+        }
+
+        // 复制代码功能
+        function copyCode(btn) {
+            const codeBlock = btn.parentElement;
+            const code = codeBlock.querySelector('code').innerText;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = '已复制!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = '#3498db';
+                }, 2000);
+            });
+        }
+
+        // 回到顶部按钮显示/隐藏
+        document.querySelector('.content').addEventListener('scroll', function() {
+            const backToTop = document.querySelector('.back-to-top');
+            if (this.scrollTop > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        // 回到顶部
+        function scrollToTop() {
+            document.querySelector('.content').scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // 页面加载时显示第一个章节
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('create-project').classList.add('active');
+        });
+    </script>
+</body>
+</html>
