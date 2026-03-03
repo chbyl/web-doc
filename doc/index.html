@@ -1,1 +1,248 @@
-1
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开发文档中心</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 42px;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #718096;
+        }
+
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .doc-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .doc-card:nth-child(1) { animation-delay: 0.1s; }
+        .doc-card:nth-child(2) { animation-delay: 0.2s; }
+        .doc-card:nth-child(3) { animation-delay: 0.3s; }
+        .doc-card:nth-child(4) { animation-delay: 0.4s; }
+        .doc-card:nth-child(5) { animation-delay: 0.5s; }
+        .doc-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .doc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .doc-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .doc-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .doc-desc {
+            font-size: 15px;
+            color: #718096;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .doc-meta {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #a0aec0;
+        }
+
+        .tag {
+            background: #edf2f7;
+            color: #4a5568;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .arrow {
+            font-size: 20px;
+            color: #cbd5e0;
+            transition: color 0.3s;
+        }
+
+        .doc-card:hover .arrow {
+            color: #667eea;
+        }
+
+        footer {
+            text-align: center;
+            color: #a0aec0;
+            font-size: 14px;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+            .docs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 开发文档中心</h1>
+            <p class="subtitle">快速访问所有项目文档和技术资源</p>
+        </header>
+
+        <div class="docs-grid">
+            <!-- API文档 -->
+            <a href="./docs/django-commands.html" class="doc-card">
+                <div class="doc-icon">🐍</div>
+                <h3 class="doc-title">Django 常用命令</h3>
+                <p class="doc-desc">Django 常用命令。</p>
+                <div class="doc-meta">
+                    <span class="tag">Django CMD</span>
+                    <span class="arrow">→</span>
+                </div>
+            </a>
+
+            <!-- 前端开发文档 -->
+            <a href="./docs/django_model_fieds.html" class="doc-card">
+                <div class="doc-icon">⌘</div>
+                <h3 class="doc-title">Django Model 文档</h3>
+                <p class="doc-desc">模型字段类型与选项速查。</p>
+                <div class="doc-meta">
+                    <span class="tag">Django/Model</span>
+                    <span class="arrow">→</span>
+                </div>
+            </a>
+
+            <!-- 后端开发文档 -->
+            <a href="/docs/backend/" class="doc-card">
+                <div class="doc-icon">🖥️</div>
+                <h3 class="doc-title">后端服务文档</h3>
+                <p class="doc-desc">服务端架构设计、数据库模型、业务逻辑实现及微服务部署方案。</p>
+                <div class="doc-meta">
+                    <span class="tag">Node.js/Java</span>
+                    <span class="arrow">→</span>
+                </div>
+            </a>
+
+            <!-- 数据库文档 -->
+            <a href="/docs/database/" class="doc-card">
+                <div class="doc-icon">🗄️</div>
+                <h3 class="doc-title">数据库设计文档</h3>
+                <p class="doc-desc">ER图、表结构定义、索引优化建议及数据迁移脚本说明。</p>
+                <div class="doc-meta">
+                    <span class="tag">MySQL/Redis</span>
+                    <span class="arrow">→</span>
+                </div>
+            </a>
+
+            <!-- 部署运维文档 -->
+            <a href="/docs/devops/" class="doc-card">
+                <div class="doc-icon">🚀</div>
+                <h3 class="doc-title">部署运维手册</h3>
+                <p class="doc-desc">Docker容器化配置、CI/CD流程、服务器监控及故障排查指南。</p>
+                <div class="doc-meta">
+                    <span class="tag">Docker/K8s</span>
+                    <span class="arrow">→</span>
+                </div>
+            </a>
+
+            <!-- 开发规范 -->
+            <a href="/docs/specs/" class="doc-card">
+                <div class="doc-icon">📋</div>
+                <h3 class="doc-title">开发规范</h3>
+                <p class="doc-desc">代码风格指南、Git提交规范、Code Review标准及安全开发准则。</p>
+                <div class="doc-meta">
+                    <span class="tag">规范</span>
+                    <span class="arrow">→</span>
+                </div>
+            </a>
+        </div>
+
+        <footer>
+            <p>© 2024 开发团队 · 如有问题请联系技术支持</p>
+        </footer>
+    </div>
+</body>
+</html>
