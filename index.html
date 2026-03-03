@@ -3,1035 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Django Model 字段参数完整参考文档111</title>
+    <title>测试域名提示</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             color: #333;
-            background: #f5f5f5;
-            padding: 20px;
+            position: relative;
         }
-        
+
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            animation: fadeIn 0.8s ease-out;
+            margin-bottom: 100px;
         }
-        
-        h1 {
-            color: #2c3e50;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-            font-size: 2.5em;
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        h2 {
-            color: #34495e;
-            margin-top: 40px;
+
+        .icon {
+            font-size: 80px;
             margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ecf0f1;
-            font-size: 1.8em;
+            display: block;
         }
-        
-        h3 {
-            color: #2980b9;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            font-size: 1.4em;
-        }
-        
-        h4 {
-            color: #27ae60;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            font-size: 1.2em;
-        }
-        
-        .highlight {
-            background: #fff3cd;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-weight: bold;
-        }
-        
-        .required {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background: white;
-        }
-        
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-        
-        th {
-            background: #3498db;
-            color: white;
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #2d3748;
             font-weight: 600;
         }
-        
-        tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-        
-        tr:hover {
-            background: #e3f2fd;
-        }
-        
-        code {
-            background: #f4f4f4;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            color: #c7254e;
-            font-size: 0.9em;
-        }
-        
-        pre {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 20px;
-            border-radius: 6px;
-            overflow-x: auto;
-            margin: 20px 0;
-            font-family: 'Consolas', 'Monaco', monospace;
-            line-height: 1.4;
-        }
-        
-        .note {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-        
-        .warning {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-        
-        .tip {
-            background: #d4edda;
-            border-left: 4px solid #28a745;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-        
-        .param-grid {
-            display: grid;
-            grid-template-columns: 200px 1fr 150px;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        
-        .param-name {
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        
-        .param-desc {
-            color: #555;
-        }
-        
-        .param-default {
-            color: #7f8c8d;
-            font-style: italic;
-        }
-        
-        .toc {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 6px;
+
+        .message {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #4a5568;
             margin-bottom: 30px;
         }
-        
-        .toc ul {
-            list-style: none;
-            padding-left: 0;
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #cbd5e0, transparent);
+            margin: 30px 0;
         }
-        
-        .toc li {
-            margin: 8px 0;
+
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 10px;
         }
-        
-        .toc a {
-            color: #2980b9;
+
+        /* 备案信息样式 */
+        .footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .beian {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+        }
+
+        .beian a {
+            color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
+            transition: color 0.3s;
+            margin: 0 10px;
         }
-        
-        .toc a:hover {
+
+        .beian a:hover {
+            color: white;
             text-decoration: underline;
         }
-        
-        .field-section {
-            margin-bottom: 40px;
-            padding: 20px;
-            background: #fafafa;
-            border-radius: 6px;
+
+        .beian-icon {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+            margin-right: 5px;
+            vertical-align: middle;
+            font-size: 10px;
+            line-height: 14px;
+            text-align: center;
+            color: #764ba2;
+            font-weight: bold;
         }
-        
-        .code-example {
-            margin: 20px 0;
-        }
-        
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
+
+        @media (max-width: 480px) {
             .container {
-                box-shadow: none;
-                max-width: 100%;
+                padding: 40px 25px;
+                margin-bottom: 120px;
             }
-            .no-print {
-                display: none;
+            h1 {
+                font-size: 24px;
+            }
+            .message {
+                font-size: 16px;
+            }
+            .beian {
+                font-size: 12px;
+            }
+            .beian a {
+                display: block;
+                margin: 5px 0;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Django Model 字段参数完整参考文档</h1>
-        
-        <div class="no-print toc">
-            <h3>目录</h3>
-            <ul>
-                <li><a href="#general">一、通用参数（所有字段）</a></li>
-                <li><a href="#char">二、CharField 参数</a></li>
-                <li><a href="#slug">三、SlugField 参数</a></li>
-                <li><a href="#text">四、TextField 参数</a></li>
-                <li><a href="#email">五、EmailField 参数</a></li>
-                <li><a href="#url">六、URLField 参数</a></li>
-                <li><a href="#number">七、数值字段参数</a></li>
-                <li><a href="#decimal">八、DecimalField 参数</a></li>
-                <li><a href="#boolean">九、BooleanField 参数</a></li>
-                <li><a href="#datetime">十、日期时间字段参数</a></li>
-                <li><a href="#file">十一、FileField 参数</a></li>
-                <li><a href="#image">十二、ImageField 参数</a></li>
-                <li><a href="#foreignkey">十三、ForeignKey 参数</a></li>
-                <li><a href="#manytomany">十四、ManyToManyField 参数</a></li>
-                <li><a href="#onetoone">十五、OneToOneField 参数</a></li>
-                <li><a href="#json">十六、JSONField 参数</a></li>
-                <li><a href="#auto">十七、AutoField 参数</a></li>
-                <li><a href="#example">十八、综合示例</a></li>
-            </ul>
+        <span class="icon">🧪</span>
+        <h1>个人测试域名</h1>
+        <div class="message">
+            本域名仅为<strong>个人测试使用</strong><br>
+            网站目前<strong>无实际内容</strong><br>
+            请勿用于正式访问
         </div>
-
-        <h2 id="general">一、通用参数（适用于所有字段）</h2>
-        <div class="note">
-            <strong>说明：</strong>以下参数可用于所有 Django Model 字段类型
-        </div>
-        
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-                <th>示例</th>
-            </tr>
-            <tr>
-                <td><code>verbose_name</code></td>
-                <td>人类可读的字段名称</td>
-                <td><code>verbose_name='用户名'</code></td>
-            </tr>
-            <tr>
-                <td><code>verbose_name_plural</code></td>
-                <td>复数名称（主要用于关系字段）</td>
-                <td><code>verbose_name_plural='用户'</code></td>
-            </tr>
-            <tr>
-                <td><code>name</code></td>
-                <td>字段名（内部使用，通常不手动设置）</td>
-                <td><code>name='user_name'</code></td>
-            </tr>
-            <tr>
-                <td><code>null</code></td>
-                <td>数据库层面是否允许 NULL 值</td>
-                <td><code>null=True</code></td>
-            </tr>
-            <tr>
-                <td><code>blank</code></td>
-                <td>表单验证层面是否允许为空</td>
-                <td><code>blank=True</code></td>
-            </tr>
-            <tr>
-                <td><code>default</code></td>
-                <td>默认值，可以是值或可调用对象</td>
-                <td><code>default=''</code> 或 <code>default=dict</code></td>
-            </tr>
-            <tr>
-                <td><code>editable</code></td>
-                <td>是否在 admin 界面中可编辑</td>
-                <td><code>editable=False</code></td>
-            </tr>
-            <tr>
-                <td><code>help_text</code></td>
-                <td>字段的帮助文本，显示在表单中</td>
-                <td><code>help_text='请输入真实姓名'</code></td>
-            </tr>
-            <tr>
-                <td><code>db_column</code></td>
-                <td>自定义数据库列名</td>
-                <td><code>db_column='user_name'</code></td>
-            </tr>
-            <tr>
-                <td><code>db_index</code></td>
-                <td>是否为该字段创建数据库索引</td>
-                <td><code>db_index=True</code></td>
-            </tr>
-            <tr>
-                <td><code>db_tablespace</code></td>
-                <td>索引的表空间（用于支持的数据库）</td>
-                <td><code>db_tablespace='indexes'</code></td>
-            </tr>
-            <tr>
-                <td><code>primary_key</code></td>
-                <td>是否将该字段设为主键</td>
-                <td><code>primary_key=True</code></td>
-            </tr>
-            <tr>
-                <td><code>unique</code></td>
-                <td>是否在该字段上创建唯一约束</td>
-                <td><code>unique=True</code></td>
-            </tr>
-            <tr>
-                <td><code>unique_for_date</code></td>
-                <td>与日期字段组合唯一</td>
-                <td><code>unique_for_date='publish_date'</code></td>
-            </tr>
-            <tr>
-                <td><code>unique_for_month</code></td>
-                <td>与月份字段组合唯一</td>
-                <td><code>unique_for_month='publish_date'</code></td>
-            </tr>
-            <tr>
-                <td><code>unique_for_year</code></td>
-                <td>与年份字段组合唯一</td>
-                <td><code>unique_for_year='publish_date'</code></td>
-            </tr>
-            <tr>
-                <td><code>auto_created</code></td>
-                <td>是否自动创建（内部使用）</td>
-                <td><code>auto_created=True</code></td>
-            </tr>
-            <tr>
-                <td><code>validators</code></td>
-                <td>验证器列表</td>
-                <td><code>validators=[validate_email]</code></td>
-            </tr>
-            <tr>
-                <td><code>error_messages</code></td>
-                <td>自定义错误消息字典</td>
-                <td><code>error_messages={'null': '不能为空'}</code></td>
-            </tr>
-            <tr>
-                <td><code>choices</code></td>
-                <td>选项列表，用于限制字段取值</td>
-                <td><code>choices=STATUS_CHOICES</code></td>
-            </tr>
-        </table>
-
-        <h2 id="char">二、CharField 参数</h2>
-        <div class="warning">
-            <strong>注意：</strong><code>max_length</code> 是必需参数
-        </div>
-        
-        <div class="code-example">
-            <pre><code>name = models.CharField(
-    max_length=100,           # 必需：最大字符长度
-    **通用参数
-)</code></pre>
-        </div>
-
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-                <th>是否必需</th>
-            </tr>
-            <tr>
-                <td><code>max_length</code></td>
-                <td>最大字符长度</td>
-                <td class="required">是</td>
-            </tr>
-        </table>
-
-        <h2 id="slug">三、SlugField 参数</h2>
-        <div class="tip">
-            <strong>提示：</strong>SlugField 继承自 CharField，用于 URL 友好的短标签
-        </div>
-        
-        <div class="code-example">
-            <pre><code>slug = models.SlugField(
-    max_length=50,            # 必需：最大长度
-    allow_unicode=False,      # 是否允许 Unicode 字符
-    **通用参数
-)</code></pre>
-        </div>
-
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-                <th>默认值</th>
-            </tr>
-            <tr>
-                <td><code>max_length</code></td>
-                <td>最大字符长度</td>
-                <td class="required">必需</td>
-            </tr>
-            <tr>
-                <td><code>allow_unicode</code></td>
-                <td>是否允许非 ASCII 字符（如中文）</td>
-                <td><code>False</code></td>
-            </tr>
-        </table>
-
-        <h2 id="text">四、TextField 参数</h2>
-        <div class="note">
-            <strong>说明：</strong>TextField 没有特有参数，只使用通用参数
-        </div>
-        
-        <div class="code-example">
-            <pre><code>description = models.TextField(
-    blank=True,               # 允许为空
-    default='',               # 默认空字符串
-    **通用参数
-)</code></pre>
-        </div>
-
-        <h2 id="email">五、EmailField 参数</h2>
-        <div class="code-example">
-            <pre><code>email = models.EmailField(
-    max_length=254,           # 默认最大长度 254
-    **通用参数
-)</code></pre>
-        </div>
-
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-                <th>默认值</th>
-            </tr>
-            <tr>
-                <td><code>max_length</code></td>
-                <td>最大字符长度</td>
-                <td><code>254</code></td>
-            </tr>
-        </table>
-
-        <h2 id="url">六、URLField 参数</h2>
-        <div class="code-example">
-            <pre><code>website = models.URLField(
-    max_length=200,           # 默认最大长度 200
-    **通用参数
-)</code></pre>
-        </div>
-
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-                <th>默认值</th>
-            </tr>
-            <tr>
-                <td><code>max_length</code></td>
-                <td>最大字符长度</td>
-                <td><code>200</code></td>
-            </tr>
-        </table>
-
-        <h2 id="number">七、数值字段参数</h2>
-        <div class="note">
-            <strong>包含字段：</strong>IntegerField, SmallIntegerField, BigIntegerField, PositiveIntegerField, PositiveSmallIntegerField, FloatField
-        </div>
-        
-        <div class="code-example">
-            <pre><code>count = models.IntegerField(
-    default=0,                # 默认值
-    **通用参数
-)
-
-rating = models.FloatField(
-    default=0.0,
-    **通用参数
-)</code></pre>
-        </div>
-
-        <p><strong>注意：</strong>数值字段没有特有参数，只使用通用参数。</p>
-
-        <h2 id="decimal">八、DecimalField 参数</h2>
-        <div class="warning">
-            <strong>注意：</strong><code>max_digits</code> 和 <code>decimal_places</code> 都是必需参数
-        </div>
-        
-        <div class="code-example">
-            <pre><code>price = models.DecimalField(
-    max_digits=10,            # 必需：总位数（包括小数位）
-    decimal_places=2,         # 必需：小数位数
-    **通用参数
-)</code></pre>
-        </div>
-
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-                <th>是否必需</th>
-            </tr>
-            <tr>
-                <td><code>max_digits</code></td>
-                <td>数字总位数（包括小数位）</td>
-                <td class="required">是</td>
-            </tr>
-            <tr>
-                <td><code>decimal_places</code></td>
-                <td>小数位数</td>
-                <td class="required">是</td>
-            </tr>
-        </table>
-
-        <h2 id="boolean">九、BooleanField 参数</h2>
-        <div class="code-example">
-            <pre><code>is_active = models.BooleanField(
-    default=True,             # 默认值
-    null=True,                # 允许 NULL（三态布尔）
-    **通用参数
-)</code></pre>
-        </div>
-
-        <p><strong>注意：</strong>BooleanField 没有特有参数，但设置 <code>null=True</code> 可实现三态布尔（True/False/None）。</p>
-
-        <h2 id="datetime">十、日期时间字段参数</h2>
-        <div class="note">
-            <strong>包含字段：</strong>DateField, DateTimeField, TimeField
-        </div>
-        
-        <div class="code-example">
-            <pre><code>created_at = models.DateTimeField(
-    auto_now=False,           # 每次保存自动更新为当前时间
-    auto_now_add=False,       # 创建时自动设置为当前时间
-    **通用参数
-)</code></pre>
-        </div>
-
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-                <th>注意</th>
-            </tr>
-            <tr>
-                <td><code>auto_now</code></td>
-                <td>每次保存时自动更新为当前时间</td>
-                <td>与 <code>auto_now_add</code> 互斥</td>
-            </tr>
-            <tr>
-                <td><code>auto_now_add</code></td>
-                <td>创建对象时自动设置为当前时间</td>
-                <td>与 <code>auto_now</code> 互斥</td>
-            </tr>
-        </table>
-
-        <h2 id="file">十一、FileField 参数</h2>
-        <div class="warning">
-            <strong>注意：</strong><code>upload_to</code> 是必需参数
-        </div>
-        
-        <div class="code-example">
-            <pre><code>document = models.FileField(
-    upload_to='documents/%Y/%m/',  # 必需：上传路径
-    storage=None,                    # 自定义存储后端
-    max_length=100,                  # 文件路径最大长度
-    **通用参数
-)</code></pre>
-        </div>
-
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-                <th>是否必需</th>
-            </tr>
-            <tr>
-                <td><code>upload_to</code></td>
-                <td>上传路径（字符串或函数）</td>
-                <td class="required">是</td>
-            </tr>
-            <tr>
-                <td><code>storage</code></td>
-                <td>自定义存储后端实例</td>
-                <td>否</td>
-            </tr>
-            <tr>
-                <td><code>max_length</code></td>
-                <td>文件路径的最大长度</td>
-                <td>否（默认 100）</td>
-            </tr>
-        </table>
-
-        <h2 id="image">十二、ImageField 参数</h2>
-        <div class="tip">
-            <strong>依赖：</strong>使用 ImageField 需要安装 Pillow 库：<code>pip install Pillow</code>
-        </div>
-        
-        <div class="code-example">
-            <pre><code>avatar = models.ImageField(
-    upload_to='avatars/',      # 必需：上传路径（继承自 FileField）
-    height_field=None,          # 自动填充高度的字段名
-    width_field=None,           # 自动填充宽度的字段名
-    max_length=100,             # 文件路径最大长度
-    **通用参数
-)</code></pre>
-        </div>
-
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-                <th>继承来源</th>
-            </tr>
-            <tr>
-                <td><code>upload_to</code></td>
-                <td>上传路径</td>
-                <td>FileField</td>
-            </tr>
-            <tr>
-                <td><code>storage</code></td>
-                <td>自定义存储后端</td>
-                <td>FileField</td>
-            </tr>
-            <tr>
-                <td><code>max_length</code></td>
-                <td>文件路径最大长度</td>
-                <td>FileField</td>
-            </tr>
-            <tr>
-                <td><code>height_field</code></td>
-                <td>用于存储图片高度的字段名</td>
-                <td>特有</td>
-            </tr>
-            <tr>
-                <td><code>width_field</code></td>
-                <td>用于存储图片宽度的字段名</td>
-                <td>特有</td>
-            </tr>
-        </table>
-
-        <h2 id="foreignkey">十三、ForeignKey 参数</h2>
-        <div class="warning">
-            <strong>注意：</strong><code>to</code> 和 <code>on_delete</code> 是必需参数（Django 2.0+）
-        </div>
-        
-        <div class="code-example">
-            <pre><code>author = models.ForeignKey(
-    to=Author,                # 必需：关联的模型类
-    on_delete=models.CASCADE, # 必需：删除关联对象时的行为
-    related_name='books',      # 反向查询名称
-    related_query_name='book', # 反向查询过滤名称
-    limit_choices_to=None,     # 限制可选对象的条件
-    parent_link=False,         # 是否作为继承链接
-    to_field=None,             # 关联到目标模型的哪个字段
-    db_constraint=True,        # 是否创建数据库外键约束
-    swappable=True,            # 是否允许模型交换（用于可交换模型）
-    **通用参数
-)</code></pre>
-        </div>
-
-        <h4>必需参数</h4>
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-            </tr>
-            <tr>
-                <td><code>to</code></td>
-                <td>关联的模型类（可以是模型类、字符串或 'self'）</td>
-            </tr>
-            <tr>
-                <td><code>on_delete</code></td>
-                <td>关联对象被删除时的行为</td>
-            </tr>
-        </table>
-
-        <h4>可选参数</h4>
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-                <th>默认值</th>
-            </tr>
-            <tr>
-                <td><code>related_name</code></td>
-                <td>反向查询的名称</td>
-                <td><code>'&lt;model_name&gt;_set'</code></td>
-            </tr>
-            <tr>
-                <td><code>related_query_name</code></td>
-                <td>反向查询过滤的名称</td>
-                <td><code>related_name</code> 的值</td>
-            </tr>
-            <tr>
-                <td><code>limit_choices_to</code></td>
-                <td>限制 admin 下拉选项的字典或 Q 对象</td>
-                <td><code>None</code></td>
-            </tr>
-            <tr>
-                <td><code>parent_link</code></td>
-                <td>用于模型继承，标记是否为父链接</td>
-                <td><code>False</code></td>
-            </tr>
-            <tr>
-                <td><code>to_field</code></td>
-                <td>关联到目标模型的哪个字段（默认主键）</td>
-                <td><code>None</code></td>
-            </tr>
-            <tr>
-                <td><code>db_constraint</code></td>
-                <td>是否在数据库层面创建外键约束</td>
-                <td><code>True</code></td>
-            </tr>
-            <tr>
-                <td><code>swappable</code></td>
-                <td>是否允许模型交换（如 User 模型）</td>
-                <td><code>True</code></td>
-            </tr>
-        </table>
-
-        <h4>on_delete 选项</h4>
-        <table>
-            <tr>
-                <th>选项</th>
-                <th>说明</th>
-            </tr>
-            <tr>
-                <td><code>CASCADE</code></td>
-                <td>级联删除，删除关联对象时也删除当前对象</td>
-            </tr>
-            <tr>
-                <td><code>PROTECT</code></td>
-                <td>阻止删除，引发 ProtectedError</td>
-            </tr>
-            <tr>
-                <td><code>SET_NULL</code></td>
-                <td>设为 NULL（需要设置 <code>null=True</code>）</td>
-            </tr>
-            <tr>
-                <td><code>SET_DEFAULT</code></td>
-                <td>设为默认值（需要设置 <code>default</code>）</td>
-            </tr>
-            <tr>
-                <td><code>SET(value)</code></td>
-                <td>设为指定值或调用可调用对象</td>
-            </tr>
-            <tr>
-                <td><code>DO_NOTHING</code></td>
-                <td>什么都不做，可能引发数据库完整性错误</td>
-            </tr>
-            <tr>
-                <td><code>RESTRICT</code></td>
-                <td>限制删除（Django 3.1+），类似 PROTECT 但更严格</td>
-            </tr>
-        </table>
-
-        <h2 id="manytomany">十四、ManyToManyField 参数</h2>
-        <div class="code-example">
-            <pre><code>tags = models.ManyToManyField(
-    to=Tag,                   # 必需：关联的模型类
-    related_name='articles',    # 反向查询名称
-    related_query_name='article', # 反向查询过滤名称
-    limit_choices_to=None,     # 限制可选对象的条件
-    symmetrical=True,          # 自关联时是否对称
-    through='ArticleTag',      # 自定义中间模型
-    through_fields=None,       # 指定中间模型字段
-    db_table=None,             # 自定义中间表名
-    swappable=True,            # 是否允许模型交换
-    **通用参数
-)</code></pre>
-        </div>
-
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-                <th>默认值</th>
-            </tr>
-            <tr>
-                <td><code>to</code></td>
-                <td>关联的模型类</td>
-                <td class="required">必需</td>
-            </tr>
-            <tr>
-                <td><code>related_name</code></td>
-                <td>反向查询的名称</td>
-                <td><code>'&lt;model_name&gt;_set'</code></td>
-            </tr>
-            <tr>
-                <td><code>related_query_name</code></td>
-                <td>反向查询过滤的名称</td>
-                <td><code>related_name</code> 的值</td>
-            </tr>
-            <tr>
-                <td><code>limit_choices_to</code></td>
-                <td>限制 admin 下拉选项</td>
-                <td><code>None</code></td>
-            </tr>
-            <tr>
-                <td><code>symmetrical</code></td>
-                <td>自关联时是否对称（如互相关注）</td>
-                <td><code>True</code></td>
-            </tr>
-            <tr>
-                <td><code>through</code></td>
-                <td>自定义中间模型（用于添加额外字段）</td>
-                <td><code>None</code></td>
-            </tr>
-            <tr>
-                <td><code>through_fields</code></td>
-                <td>指定中间模型的两个字段名</td>
-                <td><code>None</code></td>
-            </tr>
-            <tr>
-                <td><code>db_table</code></td>
-                <td>自定义中间表名</td>
-                <td><code>None</code></td>
-            </tr>
-            <tr>
-                <td><code>swappable</code></td>
-                <td>是否允许模型交换</td>
-                <td><code>True</code></td>
-            </tr>
-        </table>
-
-        <h2 id="onetoone">十五、OneToOneField 参数</h2>
-        <div class="note">
-            <strong>说明：</strong>OneToOneField 继承自 ForeignKey，参数完全相同
-        </div>
-        
-        <div class="code-example">
-            <pre><code>profile = models.OneToOneField(
-    to=Profile,               # 必需：关联的模型类
-    on_delete=models.CASCADE, # 必需：删除行为
-    related_name='user',      # 反向查询名称
-    related_query_name='user', # 反向查询过滤名称
-    limit_choices_to=None,     # 限制可选对象
-    parent_link=False,         # 是否作为继承链接
-    to_field=None,             # 关联到目标模型的哪个字段
-    db_constraint=True,        # 是否创建数据库外键约束
-    swappable=True,            # 是否允许模型交换
-    **通用参数
-)</code></pre>
-        </div>
-
-        <p>参数与 <code>ForeignKey</code> 完全一致。</p>
-
-        <h2 id="json">十六、JSONField 参数（Django 3.1+）</h2>
-        <div class="tip">
-            <strong>版本要求：</strong>Django 3.1+ 原生支持 JSONField，所有数据库后端都可用
-        </div>
-        
-        <div class="code-example">
-            <pre><code>data = models.JSONField(
-    encoder=None,             # 自定义 JSON 编码器
-    decoder=None,             # 自定义 JSON 解码器
-    **通用参数
-)</code></pre>
-        </div>
-
-        <table>
-            <tr>
-                <th>参数名</th>
-                <th>说明</th>
-                <th>默认值</th>
-            </tr>
-            <tr>
-                <td><code>encoder</code></td>
-                <td>JSON 编码器类</td>
-                <td><code>None</code></td>
-            </tr>
-            <tr>
-                <td><code>decoder</code></td>
-                <td>JSON 解码器类</td>
-                <td><code>None</code></td>
-            </tr>
-        </table>
-
-        <h2 id="auto">十七、AutoField / BigAutoField 参数</h2>
-        <div class="code-example">
-            <pre><code>id = models.AutoField(
-    primary_key=True,         # 通常自动设置
-    **通用参数
-)</code></pre>
-        </div>
-
-        <p><strong>注意：</strong>AutoField 没有特有参数，通常由 Django 自动创建主键。</p>
-
-        <h2 id="example">十八、综合示例</h2>
-        <div class="code-example">
-            <pre><code>from django.db import models
-from django.core.validators import MinValueValidator
-
-class Product(models.Model):
-    # CharField 示例
-    name = models.CharField(
-        '产品名称',
-        max_length=200,
-        db_index=True,
-        unique=True,
-        help_text='请输入产品名称',
-        error_messages={
-            'unique': '该产品名称已存在',
-            'blank': '名称不能为空'
-        }
-    )
-    
-    # SlugField 示例
-    slug = models.SlugField(
-        'URL标识',
-        max_length=200,
-        unique=True,
-        allow_unicode=True
-    )
-    
-    # TextField 示例
-    description = models.TextField(
-        '产品描述',
-        blank=True,
-        default=''
-    )
-    
-    # DecimalField 示例
-    price = models.DecimalField(
-        '价格',
-        max_digits=10,
-        decimal_places=2,
-        default=0.00,
-        validators=[MinValueValidator(0)]
-    )
-    
-    # 正整数字段示例
-    stock = models.PositiveIntegerField(
-        '库存',
-        default=0,
-        db_index=True
-    )
-    
-    # BooleanField 示例
-    is_available = models.BooleanField(
-        '是否上架',
-        default=True,
-        editable=True
-    )
-    
-    # 日期时间字段示例
-    created_at = models.DateTimeField(
-        '创建时间',
-        auto_now_add=True,
-        db_index=True
-    )
-    
-    updated_at = models.DateTimeField(
-        '更新时间',
-        auto_now=True
-    )
-    
-    # ImageField 示例
-    image = models.ImageField(
-        '产品图片',
-        upload_to='products/%Y/%m/',
-        blank=True,
-        null=True,
-        height_field='image_height',
-        width_field='image_width'
-    )
-    
-    image_height = models.PositiveIntegerField(null=True, blank=True)
-    image_width = models.PositiveIntegerField(null=True, blank=True)
-    
-    # ForeignKey 示例
-    category = models.ForeignKey(
-        'Category',
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='products',
-        related_query_name='product',
-        limit_choices_to={'is_active': True},
-        verbose_name='分类'
-    )
-    
-    # ManyToManyField 示例
-    tags = models.ManyToManyField(
-        'Tag',
-        blank=True,
-        related_name='products',
-        through='ProductTag',
-        db_table='product_tags_relation'
-    )
-    
-    # OneToOneField 示例
-    supplier = models.OneToOneField(
-        'Supplier',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name='exclusive_product'
-    )
-    
-    # JSONField 示例
-    metadata = models.JSONField(
-        '元数据',
-        default=dict,
-        blank=True
-    )
-    
-    class Meta:
-        db_table = 'products'
-        ordering = ['-created_at']
-        verbose_name = '产品'
-        verbose_name_plural = '产品管理'
-        unique_together = [['name', 'category']]
-        index_together = [['category', 'is_available']]
-    
-    def __str__(self):
-        return self.name</code></pre>
-        </div>
-
-        <div class="tip">
-            <h3>重要提示</h3>
-            <ul>
-                <li><code>ForeignKey</code> 和 <code>OneToOneField</code> 在 Django 2.0+ 必须指定 <code>on_delete</code></li>
-                <li><code>CharField</code> 及其子类（如 <code>SlugField</code>, <code>EmailField</code> 等）必须指定 <code>max_length</code></li>
-                <li><code>DecimalField</code> 必须同时指定 <code>max_digits</code> 和 <code>decimal_places</code></li>
-                <li><code>ImageField</code> 需要安装 Pillow 库</li>
-                <li><code>auto_now</code> 和 <code>auto_now_add</code> 是互斥的，不能同时使用</li>
-                <li>设置 <code>null=True</code> 影响数据库层面，<code>blank=True</code> 影响表单验证层面</li>
-            </ul>
-        </div>
+        <div class="divider"></div>
+        <div class="badge">测试环境</div>
     </div>
+
+    <!-- 备案信息 -->
+    <footer class="footer">
+        <div class="beian">
+            <p>
+                <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
+                    豫ICP备17032463号-3
+                </a>
+                <span style="margin: 0 10px;">|</span>
+                <a href="http://www.beian.gov.cn/portal/registerSystemInfo" target="_blank" rel="noopener noreferrer">
+                    <span class="beian-icon">公</span>
+                    豫公网安备41108202000913号
+                </a>
+            </p>
+            <p style="margin-top: 8px; font-size: 12px; opacity: 0.7;">
+                © 2024 个人测试站点 版权所有
+            </p>
+			<p style="display:none;">
+                <a href="./doc/index.html" target="_blank" rel="noopener noreferrer">
+                    文档
+                </a>
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
