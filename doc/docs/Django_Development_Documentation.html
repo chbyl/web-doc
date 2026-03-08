@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django 中文开发文档</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Active Link Styling */
+        .nav-link.active {
+            color: #0f172a;
+            background-color: #e2e8f0;
+            border-right: 3px solid #0f172a;
+            font-weight: 600;
+        }
+
+        /* Syntax Highlighting Colors */
+        .token-keyword { color: #c678dd; }
+        .token-string { color: #98c379; }
+        .token-func { color: #61afef; }
+        .token-comment { color: #5c6370; font-style: italic; }
+        .token-class { color: #e5c07b; }
+    </style>
+</head>
+<body class="bg-white text-slate-800 h-screen flex flex-col md:flex-row overflow-hidden">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center z-50">
+        <div class="font-bold text-xl tracking-tight">Django 文档</div>
+        <button id="mobile-menu-btn" class="text-white focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+    </div>
+
+    <!-- Sidebar (Navigation) -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-72 bg-slate-50 border-r border-slate-200 flex flex-col transition-transform duration-300 ease-in-out z-40 pt-16 md:pt-0">
+        <div class="p-6 border-b border-slate-200 hidden md:block">
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Django 文档</h1>
+            <p class="text-xs text-slate-500 mt-1">版本 4.2 (LTS)</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="p-4">
+            <div class="relative">
+                <input type="text" placeholder="搜索文档..." class="w-full pl-9 pr-4 py-2 bg-white border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow">
+                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 overflow-y-auto px-4 pb-6 space-y-1" id="nav-container">
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 mt-4">快速入门</div>
+            <a href="#overview" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">概览</a>
+            <a href="#install" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">安装指南</a>
+            
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 mt-6">核心教程</div>
+            <a href="#tutorial-1" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">第1部分：请求与响应</a>
+            <a href="#tutorial-2" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">第2部分：模型与管理后台</a>
+            <a href="#tutorial-3" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">第3部分：视图与模板</a>
+            <a href="#tutorial-4" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">第4部分：表单与通用视图</a>
+
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 mt-6">参考文档</div>
+            <a href="#settings" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">设置 (Settings)</a>
+            <a href="#urls" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">URL 调度器</a>
+            <a href="#middleware" class="nav-link block px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">中间件</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 h-full overflow-y-auto relative scroll-smooth" id="main-content">
+        <div class="max-w-4xl mx-auto px-6 py-12 md:px-12">
+            
+            <!-- Header Section -->
+            <div class="mb-12 border-b border-slate-200 pb-8">
+                <div class="flex items-center space-x-2 mb-4">
+                    <span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded uppercase">Documentation</span>
+                    <span class="text-slate-400 text-sm">最后更新: 2023-10-27</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Django 文档</h1>
+                <p class="text-xl text-slate-600 leading-relaxed">
+                    你需要了解关于 Django 的一切。Django 是一个高级 Python Web 框架，它鼓励快速开发和简洁、实用的设计。
+                </p>
+            </div>
+
+            <!-- Content Sections -->
+
+            <!-- Overview -->
+            <section id="overview" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-100">概览</h2>
+                <p class="mb-4 text-slate-700 leading-7">
+                    Django 是一个开放源代码的 Web 应用框架，由 Python 写成。采用了 MTV 的框架模式，即模型（Model）、模板（Template）和视图（Views）。
+                </p>
+                <div class="bg-slate-50 border-l-4 border-emerald-500 p-4 my-6 rounded-r-md">
+                    <h3 class="font-bold text-slate-900 mb-2">Django 提供了什么？</h3>
+                    <ul class="list-disc list-inside space-y-1 text-slate-700">
+                        <li>一个<strong>对象关系映射器 (ORM)</strong>，用于通过 Python 代码定义数据模型。</li>
+                        <li>一个自动生成的<strong>后台管理界面</strong>。</li>
+                        <li>一个优雅的<strong>URL 分发系统</strong>。</li>
+                        <li>一个设计精妙的<strong>模板系统</strong>。</li>
+                        <li>用于开发环境的轻量级 Web 服务器。</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Install -->
+            <section id="install" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-100">安装指南</h2>
+                <p class="mb-4 text-slate-700 leading-7">
+                    在安装 Django 之前，请确保你已经安装了 Python。Django 4.2 支持 Python 3.8、3.9、3.10、3.11 和 3.12。
+                </p>
+                
+                <h3 class="text-xl font-semibold text-slate-800 mt-8 mb-4">快速安装</h3>
+                <p class="mb-2 text-sm text-slate-500">使用 pip 安装 Django：</p>
+                <div class="bg-slate-900 rounded-lg overflow-hidden shadow-lg mb-6">
+                    <div class="flex items-center px-4 py-2 bg-slate-800 border-b border-slate-700">
+                        <div class="flex space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <span class="ml-4 text-xs text-slate-400 font-mono">terminal</span>
+                    </div>
+                    <div class="p-4 overflow-x-auto">
+                        <code class="code-font text-sm text-slate-300">
+                            $ python -m pip install Django
+                        </code>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-slate-800 mt-8 mb-4">验证安装</h3>
+                <div class="bg-slate-900 rounded-lg overflow-hidden shadow-lg">
+                    <div class="p-4 overflow-x-auto">
+                        <code class="code-font text-sm text-slate-300">
+                            $ python -m django --version
+                        </code>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tutorial 1 -->
+            <section id="tutorial-1" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-100">第1部分：请求与响应</h2>
+                <p class="mb-4 text-slate-700 leading-7">
+                    我们将学习如何创建一个基本的 Django 项目。这部分涵盖了创建项目、开发服务器以及创建第一个视图。
+                </p>
+
+                <h3 class="text-xl font-semibold text-slate-800 mt-6 mb-4">创建项目</h3>
+                <p class="mb-2 text-slate-700">打开命令行，cd 到你想要存放代码的目录，然后运行以下命令：</p>
+                <div class="bg-slate-900 rounded-lg overflow-hidden shadow-lg mb-6">
+                    <div class="p-4 overflow-x-auto">
+                        <code class="code-font text-sm text-slate-300">
+                            $ django-admin startproject mysite
+                        </code>
+                    </div>
+                </div>
+                <p class="mb-4 text-slate-700">这行代码将会在当前目录下创建一个 <code class="bg-slate-100 text-pink-600 px-1 py-0.5 rounded text-sm">mysite</code> 目录。</p>
+            </section>
+
+            <!-- Tutorial 2 -->
+            <section id="tutorial-2" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-100">第2部分：模型与管理后台</h2>
+                <p class="mb-4 text-slate-700 leading-7">
+                    这部分我们将定义你的第一个模型——本质上是你的数据库布局，附带元数据。
+                </p>
+
+                <h3 class="text-xl font-semibold text-slate-800 mt-6 mb-4">数据库配置</h3>
+                <p class="mb-2 text-slate-700">打开 <code class="bg-slate-100 text-pink-600 px-1 py-0.5 rounded text-sm">mysite/settings.py</code>。默认情况下，Django 使用 SQLite。</p>
+                
+                <h3 class="text-xl font-semibold text-slate-800 mt-6 mb-4">创建模型</h3>
+                <p class="mb-2 text-slate-700">在 <code class="bg-slate-100 text-pink-600 px-1 py-0.5 rounded text-sm">polls/models.py</code> 文件中添加以下代码：</p>
+                
+                <div class="bg-slate-900 rounded-lg overflow-hidden shadow-lg mb-6">
+                    <div class="p-4 overflow-x-auto">
+<pre class="code-font text-sm text-slate-300"><span class="token-keyword">from</span> django.db <span class="token-keyword">import</span> models
+
+<span class="token-keyword">class</span> <span class="token-class">Question</span>(models.Model):
+    question_text = models.CharField(max_length=<span class="token-string">200</span>)
+    pub_date = models.DateTimeField(<span class="token-string">"date published"</span>)
+
+<span class="token-keyword">class</span> <span class="token-class">Choice</span>(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=<span class="token-string">200</span>)
+    votes = models.IntegerField(default=<span class="token-string">0</span>)</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tutorial 3 -->
+            <section id="tutorial-3" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-100">第3部分：视图与模板</h2>
+                <p class="mb-4 text-slate-700 leading-7">
+                    视图负责接受 Web 请求并返回 Web 响应。响应可以是 HTML 内容、重定向、404 错误、XML 文档或图片等。
+                </p>
+
+                <h3 class="text-xl font-semibold text-slate-800 mt-6 mb-4">编写更多视图</h3>
+                <p class="mb-2 text-slate-700">让我们在 <code class="bg-slate-100 text-pink-600 px-1 py-0.5 rounded text-sm">polls/views.py</code> 里添加更多视图：</p>
+                
+                <div class="bg-slate-900 rounded-lg overflow-hidden shadow-lg mb-6">
+                    <div class="p-4 overflow-x-auto">
+<pre class="code-font text-sm text-slate-300"><span class="token-keyword">from</span> django.http <span class="token-keyword">import</span> HttpResponse
+
+<span class="token-keyword">def</span> <span class="token-func">detail</span>(request, question_id):
+    <span class="token-keyword">return</span> HttpResponse(<span class="token-string">"You're looking at question %s."</span> % question_id)
+
+<span class="token-keyword">def</span> <span class="token-func">results</span>(request, question_id):
+    response = <span class="token-string">"You're looking at the results of question %s."</span>
+    <span class="token-keyword">return</span> HttpResponse(response % question_id)
+
+<span class="token-keyword">def</span> <span class="token-func">vote</span>(request, question_id):
+    <span class="token-keyword">return</span> HttpResponse(<span class="token-string">"You're voting on question %s."</span> % question_id)</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tutorial 4 -->
+            <section id="tutorial-4" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-100">第4部分：表单与通用视图</h2>
+                <p class="mb-4 text-slate-700 leading-7">
+                    我们将继续完善我们的投票应用，重点放在处理表单和减少代码冗余上。
+                </p>
+                
+                <h3 class="text-xl font-semibold text-slate-800 mt-6 mb-4">编写一个简单的表单</h3>
+                <p class="mb-2 text-slate-700">更新 <code class="bg-slate-100 text-pink-600 px-1 py-0.5 rounded text-sm">polls/detail.html</code> 模板：</p>
+                
+                <div class="bg-slate-900 rounded-lg overflow-hidden shadow-lg mb-6">
+                    <div class="p-4 overflow-x-auto">
+<pre class="code-font text-sm text-slate-300">&lt;form action=<span class="token-string">"{% url 'polls:vote' question.id %}"</span> method=<span class="token-string">"post"</span>&gt;
+{% csrf_token %}
+&lt;fieldset&gt;
+    &lt;legend&gt;&lt;h1&gt;{{ question.question_text }}&lt;/h1&gt;&lt;/legend&gt;
+    {% <span class="token-keyword">if</span> error_message %}&lt;p&gt;&lt;strong&gt;{{ error_message }}&lt;/strong&gt;&lt;/p&gt;{% endif %}
+    {% <span class="token-keyword">for</span> choice <span class="token-keyword">in</span> question.choice_set.all %}
+        &lt;input type=<span class="token-string">"radio"</span> name=<span class="token-string">"choice"</span> id=<span class="token-string">"choice{{ forloop.counter }}"</span> value=<span class="token-string">"{{ choice.id }}"</span>&gt;
+        &lt;label <span class="token-keyword">for</span>=<span class="token-string">"choice{{ forloop.counter }}"</span>&gt;{{ choice.choice_text }}&lt;/label&gt;&lt;br&gt;
+    {% endfor %}
+&lt;/fieldset&gt;
+&lt;input type=<span class="token-string">"submit"</span> value=<span class="token-string">"Vote"</span>&gt;
+&lt;/form&gt;</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings -->
+            <section id="settings" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-100">设置 (Settings)</h2>
+                <p class="mb-4 text-slate-700 leading-7">
+                    Django 设置文件是一个 Python 模块，包含 Django 配置。这里有一些重要的设置项。
+                </p>
+                
+                <div class="bg-slate-900 rounded-lg overflow-hidden shadow-lg mb-6">
+                    <div class="p-4 overflow-x-auto">
+<pre class="code-font text-sm text-slate-300"><span class="token-comment"># settings.py</span>
+
+<span class="token-comment"># 调试模式</span>
+DEBUG = <span class="token-keyword">True</span>
+
+<span class="token-comment"># 允许的主机</span>
+ALLOWED_HOSTS = [<span class="token-string">'localhost'</span>, <span class="token-string">'127.0.0.1'</span>]
+
+<span class="token-comment"># 已安装的应用</span>
+INSTALLED_APPS = [
+    <span class="token-string">'django.contrib.admin'</span>,
+    <span class="token-string">'django.contrib.auth'</span>,
+    <span class="token-string">'django.contrib.contenttypes'</span>,
+    <span class="token-string">'polls'</span>,  <span class="token-comment"># 你的应用</span>
+]</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- URLs -->
+            <section id="urls" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-100">URL 调度器</h2>
+                <p class="mb-4 text-slate-700 leading-7">
+                    简洁优雅的 URL 方案是高质量 Web 应用的一个细节。Django 允许你任意设计 URL。
+                </p>
+                
+                <h3 class="text-xl font-semibold text-slate-800 mt-6 mb-4">示例 URLconf</h3>
+                <div class="bg-slate-900 rounded-lg overflow-hidden shadow-lg mb-6">
+                    <div class="p-4 overflow-x-auto">
+<pre class="code-font text-sm text-slate-300"><span class="token-keyword">from</span> django.urls <span class="token-keyword">import</span> path
+
+<span class="token-keyword">from</span> . <span class="token-keyword">import</span> views
+
+urlpatterns = [
+    path(<span class="token-string">''</span>, views.index, name=<span class="token-string">'index'</span>),
+    path(<span class="token-string">'&lt;int:question_id&gt;/'</span>, views.detail, name=<span class="token-string">'detail'</span>),
+    path(<span class="token-string">'&lt;int:question_id&gt;/results/'</span>, views.results, name=<span class="token-string">'results'</span>),
+    path(<span class="token-string">'&lt;int:question_id&gt;/vote/'</span>, views.vote, name=<span class="token-string">'vote'</span>),
+]</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Middleware -->
+            <section id="middleware" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-100">中间件</h2>
+                <p class="mb-4 text-slate-700 leading-7">
+                    中间件是一个钩子框架，用于处理 Django 的请求/响应处理过程。它是一个轻量级、低级的“插件”系统，用于全局改变 Django 的输入或输出。
+                </p>
+                
+                <h3 class="text-xl font-semibold text-slate-800 mt-6 mb-4">激活中间件</h3>
+                <p class="mb-2 text-slate-700">要激活中间件组件，请将其添加到 Django 设置中的 <code class="bg-slate-100 text-pink-600 px-1 py-0.5 rounded text-sm">MIDDLEWARE</code> 列表中。</p>
+                
+                <div class="bg-slate-900 rounded-lg overflow-hidden shadow-lg mb-6">
+                    <div class="p-4 overflow-x-auto">
+<pre class="code-font text-sm text-slate-300">MIDDLEWARE = [
+    <span class="token-string">'django.middleware.security.SecurityMiddleware'</span>,
+    <span class="token-string">'django.contrib.sessions.middleware.SessionMiddleware'</span>,
+    <span class="token-string">'django.middleware.common.CommonMiddleware'</span>,
+    <span class="token-string">'django.middleware.csrf.CsrfViewMiddleware'</span>,
+    <span class="token-string">'django.contrib.auth.middleware.AuthenticationMiddleware'</span>,
+    <span class="token-string">'django.contrib.messages.middleware.MessageMiddleware'</span>,
+]</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="mt-20 pt-8 border-t border-slate-200 text-center text-slate-500 text-sm">
+                <p>&copy; 2023 Django Software Foundation. 保留所有权利。</p>
+                <p class="mt-2">本文档基于 Django 4.2 构建。</p>
+            </footer>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const sidebar = document.getElementById('sidebar');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+            const mainContent = document.getElementById('main-content');
+
+            // Mobile Menu Toggle
+            mobileMenuBtn.addEventListener('click', () => {
+                const isClosed = sidebar.classList.contains('-translate-x-full');
+                if (isClosed) {
+                    sidebar.classList.remove('-translate-x-full');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+
+            // Close mobile menu when clicking a link
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth < 768) { // md breakpoint
+                        sidebar.classList.add('-translate-x-full');
+                    }
+                });
+            });
+
+            // Scroll Spy Logic
+            const observerOptions = {
+                root: mainContent,
+                rootMargin: '-20% 0px -60% 0px', // Trigger when section is near top
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Remove active class from all links
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            link.classList.remove('bg-slate-100');
+                            link.classList.remove('text-slate-900');
+                        });
+
+                        // Add active class to current link
+                        const id = entry.target.getAttribute('id');
+                        const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('active');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Smooth scroll for anchor links (optional enhancement)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
