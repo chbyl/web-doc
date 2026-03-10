@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django SQLite 迁移到 MySQL 完整指南</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* 左侧菜单 */
+        .sidebar {
+            width: 300px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            overflow-y: auto;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header h1 {
+            font-size: 1.3rem;
+            color: #3498db;
+        }
+        
+        .sidebar-header p {
+            font-size: 0.8rem;
+            color: #95a5a6;
+            margin-top: 5px;
+        }
+        
+        .menu-section {
+            margin-bottom: 15px;
+        }
+        
+        .menu-title {
+            padding: 10px 20px;
+            font-weight: bold;
+            color: #3498db;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .menu-list {
+            list-style: none;
+        }
+        
+        .menu-list li a {
+            display: block;
+            padding: 8px 20px 8px 30px;
+            color: #bdc3c7;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-list li a:hover {
+            background: #34495e;
+            color: #fff;
+            border-left-color: #3498db;
+        }
+        
+        .menu-list li a.active {
+            background: #34495e;
+            color: #3498db;
+            border-left-color: #3498db;
+        }
+        
+        /* 右侧内容 */
+        .content {
+            margin-left: 300px;
+            flex: 1;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .section {
+            background: #fff;
+            margin: 20px;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        .section h3 {
+            color: #34495e;
+            font-size: 1.5rem;
+            margin: 30px 0 15px;
+        }
+        
+        .section h4 {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin: 25px 0 10px;
+        }
+        
+        .section p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .section ul, .section ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        .section li {
+            margin-bottom: 8px;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: "Courier New", monospace;
+            color: #e74c3c;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .code-header {
+            background: #34495e;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 5px 5px 0 0;
+            font-size: 0.85rem;
+            margin-top: 20px;
+        }
+        
+        .code-block {
+            margin-top: 0;
+            border-radius: 0 0 5px 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .tip {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .danger {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #3498db;
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .anchor {
+            display: block;
+            position: relative;
+            top: -20px;
+            visibility: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+            .content {
+                margin-left: 0;
+            }
+            body {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 左侧菜单 -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h1>Django 数据库迁移</h1>
+            <p>SQLite → MySQL 完整指南</p>
+        </div>
+        
+        <div class="menu-section">
+            <div class="menu-title">准备工作</div>
+            <ul class="menu-list">
+                <li><a href="#overview">迁移概述</a></li>
+                <li><a href="#requirements">环境要求</a></li>
+                <li><a href="#backup">备份数据</a></li>
+            </ul>
+        </div>
+        
+        <div class="menu-section">
+            <div class="menu-title">迁移步骤</div>
+            <ul class="menu-list">
+                <li><a href="#step1">步骤1：安装依赖</a></li>
+                <li><a href="#step2">步骤2：创建MySQL数据库</a></li>
+                <li><a href="#step3">步骤3：修改配置</a></li>
+                <li><a href="#step4">步骤4：处理编码问题</a></li>
+                <li><a href="#step5">步骤5：导出数据</a></li>
+                <li><a href="#step6">步骤6：导入数据</a></li>
+                <li><a href="#step7">步骤7：验证迁移</a></li>
+            </ul>
+        </div>
+        
+        <div class="menu-section">
+            <div class="menu-title">常见问题</div>
+            <ul class="menu-list">
+                <li><a href="#mysql-version">MySQL版本问题</a></li>
+                <li><a href="#encoding">编码问题详解</a></li>
+                <li><a href="#foreign-key">外键约束错误</a></li>
+                <li><a href="#other">其他问题</a></li>
+            </ul>
+        </div>
+        
+        <div class="menu-section">
+            <div class="menu-title">高级配置</div>
+            <ul class="menu-list">
+                <li><a href="#production">生产环境配置</a></li>
+                <li><a href="#tools">迁移工具推荐</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 右侧内容 -->
+    <main class="content">
+        <!-- 概述 -->
+        <div class="section" id="overview">
+            <span class="anchor"></span>
+            <h2>迁移概述</h2>
+            
+            <p>将Django项目从SQLite迁移到MySQL是项目成长过程中的常见需求。SQLite适合开发和测试，但生产环境通常需要MySQL提供更强的性能、并发处理能力和数据完整性保障。</p>
+            
+            <div class="note">
+                <strong>迁移原理：</strong>Django的ORM层屏蔽了底层数据库差异，因此迁移过程主要是数据导出导入，而非修改业务代码。
+            </div>
+            
+            <h3>迁移流程图</h3>
+            <pre><code>SQLite数据库
+    ↓
+导出数据 (dumpdata)
+    ↓
+处理编码问题（关键步骤）
+    ↓
+创建MySQL数据库
+    ↓
+修改Django配置
+    ↓
+导入数据 (loaddata)
+    ↓
+验证迁移结果</code></pre>
+        </div>
+
+        <!-- 环境要求 -->
+        <div class="section" id="requirements">
+            <span class="anchor"></span>
+            <h2>环境要求</h2>
+            
+            <table>
+                <tr>
+                    <th>组件</th>
+                    <th>最低版本</th>
+                    <th>推荐版本</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td>Django</td>
+                    <td>3.2</td>
+                    <td>4.2+</td>
+                    <td>Django 4.2+ 需要MySQL 8.0+</td>
+                </tr>
+                <tr>
+                    <td>MySQL</td>
+                    <td>5.7</td>
+                    <td>8.0+</td>
+                    <td>Django 4.2+ 必须MySQL 8.0+</td>
+                </tr>
+                <tr>
+                    <td>Python</td>
+                    <td>3.8</td>
+                    <td>3.10+</td>
+                    <td>Python MySQL驱动兼容性</td>
+                </tr>
+                <tr>
+                    <td>mysqlclient</td>
+                    <td>2.0</td>
+                    <td>2.2+</td>
+                    <td>Python的MySQL连接库</td>
+                </tr>
+            </table>
+            
+            <div class="danger">
+                <strong>重要警告：</strong>Django 4.2及以上版本<strong>必须</strong>使用MySQL 8.0或更高版本。使用MySQL 5.7会报错：<code>MySQL 8 or later is required (found 5.7.xx)</code>
+            </div>
+        </div>
+
+        <!-- 备份 -->
+        <div class="section" id="backup">
+            <span class="anchor"></span>
+            <h2>备份数据</h2>
+            
+            <div class="warning">
+                <strong>迁移前务必备份！</strong>虽然Django的迁移过程相对安全，但备份能防止意外数据丢失。
+            </div>
+            
+            <h3>备份SQLite数据库</h3>
+            <div class="code-header">bash</div>
+            <pre class="code-block"><code># 直接复制数据库文件
+cp db.sqlite3 db.sqlite3.backup.$(date +%Y%m%d%H%M%S)
+
+# Windows
+copy db.sqlite3 db.sqlite3.backup.%date:~0,4%%date:~5,2%%date:~8,2%</code></pre>
+            
+            <h3>备份到JSON（双重保险）</h3>
+            <div class="code-header">bash</div>
+            <pre class="code-block"><code># 导出所有数据
+python manage.py dumpdata --natural-primary --natural-foreign > full_backup.json
+
+# 排除contenttypes和auth权限（这些会自动生成）
+python manage.py dumpdata --exclude contenttypes --exclude auth.permission > data_backup.json</code></pre>
+        </div>
+
+        <!-- 步骤1 -->
+        <div class="section" id="step1">
+            <span class="anchor"></span>
+            <h2>步骤1：安装MySQL依赖</h2>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>安装mysqlclient</strong>
+            </div>
+            
+            <div class="code-header">bash</div>
+            <pre class="code-block"><code># 推荐安装方式
+pip install mysqlclient
+
+# 如果安装失败，尝试以下替代方案：
+
+# 方案A：使用pymysql（纯Python实现）
+pip install pymysql
+
+# 然后在项目__init__.py中添加：
+# import pymysql
+# pymysql.install_as_MySQLdb()
+
+# 方案B：使用mysql-connector-python（官方驱动）
+pip install mysql-connector-python
+
+# 然后在settings.py中修改ENGINE：
+# 'ENGINE': 'mysql.connector.django',</code></pre>
+            
+            <div class="tip">
+                <strong>Windows安装mysqlclient提示：</strong>如果安装失败，先下载安装 <a href="https://dev.mysql.com/downloads/connector/c/">MySQL Connector/C</a>，或直接使用pymysql替代方案。
+            </div>
+        </div>
+
+        <!-- 步骤2 -->
+        <div class="section" id="step2">
+            <span class="anchor"></span>
+            <h2>步骤2：创建MySQL数据库</h2>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>创建数据库和用户</strong>
+            </div>
+            
+            <div class="code-header">SQL</div>
+            <pre class="code-block"><code>-- 登录MySQL（使用root或管理员账号）
+mysql -u root -p
+
+-- 创建数据库（使用utf8mb4字符集支持emoji）
+CREATE DATABASE django_db 
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
+-- 创建专用用户（推荐，不要使用root）
+CREATE USER 'django_user'@'localhost' 
+IDENTIFIED BY 'your_secure_password';
+
+-- 授权
+GRANT ALL PRIVILEGES ON django_db.* 
+TO 'django_user'@'localhost';
+
+-- 刷新权限
+FLUSH PRIVILEGES;
+
+-- 验证
+SHOW DATABASES;
+SELECT user, host FROM mysql.user;</code></pre>
+            
+            <div class="note">
+                <strong>字符集说明：</strong><code>utf8mb4</code> 是完整的UTF-8实现，支持存储emoji表情和特殊字符。旧的 <code>utf8</code> 是阉割版，不建议使用。
+            </div>
+        </div>
+
+        <!-- 步骤3 -->
+        <div class="section" id="step3">
+            <span class="anchor"></span>
+            <h2>步骤3：修改Django配置</h2>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>修改settings.py</strong>
+            </div>
+            
+            <div class="code-header">settings.py</div>
+            <pre class="code-block"><code># 原SQLite配置（注释掉或删除）
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# 新MySQL配置
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_db',           # 数据库名
+        'USER': 'django_user',         # 用户名
+        'PASSWORD': 'your_secure_password',   # 密码
+        'HOST': 'localhost',           # 主机地址
+        'PORT': '3306',                # 端口（默认3306）
+        
+        # 连接选项
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+        
+        # 连接池配置（可选）
+        'CONN_MAX_AGE': 600,  # 连接持久化10分钟
+    }
+}
+
+# 如果使用pymysql替代方案，在文件顶部添加：
+# import pymysql
+# pymysql.install_as_MySQLdb()</code></pre>
+            
+            <h3>测试连接</h3>
+            <div class="code-header">bash</div>
+            <pre class="code-block"><code># 验证配置是否正确
+python manage.py check
+
+# 如果出现错误，检查：
+# 1. MySQL服务是否启动
+# 2. 用户名密码是否正确
+# 3. 数据库是否存在</code></pre>
+        </div>
+
+        <!-- 步骤4 - 关键步骤 -->
+        <div class="section" id="step4">
+            <span class="anchor"></span>
+            <h2>步骤4：处理编码问题（关键步骤）</h2>
+            
+            <div class="danger">
+                <strong>这是最容易出错的步骤！</strong>Windows系统默认使用GBK编码，而Django需要UTF-8，直接导出的文件可能包含乱码，导致导入失败。
+            </div>
+            
+            <div class="step">
+                <span class="step-number">4</span>
+                <strong>确保导出文件为UTF-8编码</strong>
+            </div>
+            
+            <h3>方案A：设置环境变量后导出（推荐）</h3>
+            <div class="code-header">PowerShell (Windows)</div>
+            <pre class="code-block"><code># 设置UTF-8编码环境
+$env:PYTHONIOENCODING="utf-8"
+
+# 然后导出数据
+python manage.py dumpdata --natural-primary --natural-foreign --indent 2 > data.json
+
+# 验证文件编码（使用VS Code或Notepad++打开，右下角应显示UTF-8）</code></pre>
+            
+            <div class="code-header">CMD (Windows)</div>
+            <pre class="code-block"><code># 设置环境变量
+set PYTHONIOENCODING=utf-8
+
+# 导出数据
+python manage.py dumpdata --natural-primary --natural-foreign --indent 2 > data.json</code></pre>
+            
+            <h3>方案B：使用Python脚本导出（最可靠）</h3>
+            <div class="code-header">export_data.py</div>
+            <pre class="code-block"><code>#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import os
+import sys
+import django
+
+# 设置环境
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'your_project.settings')
+sys.stdout = open('data.json', 'w', encoding='utf-8')
+
+django.setup()
+
+from django.core.management import call_command
+
+# 导出数据
+call_command('dumpdata', 
+    '--natural-primary', 
+    '--natural-foreign',
+    '--indent', '2',
+    '--exclude', 'contenttypes',
+    '--exclude', 'auth.permission'
+)
+
+print("数据已导出到 data.json (UTF-8编码)")</code></pre>
+            
+            <div class="code-header">bash</div>
+            <pre class="code-block"><code>python export_data.py</code></pre>
+            
+            <h3>方案C：如果已有文件编码错误，使用修复脚本</h3>
+            <div class="warning">
+                如果导出后出现 <code>UnicodeDecodeError: 'utf-8' codec can't decode byte...</code> 错误，使用以下脚本修复：
+            </div>
+            
+            <div class="code-header">fix_encoding.py</div>
+            <pre class="code-block"><code>#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+编码修复脚本 - 处理Windows导出的GBK编码文件
+"""
+import os
+
+def fix_encoding():
+    # 读取原始文件（二进制模式）
+    with open('data.json', 'rb') as f:
+        raw_data = f.read()
+    
+    # 尝试多种编码解码
+    encodings = ['utf-8', 'gbk', 'gb2312', 'gb18030', 'latin-1']
+    decoded_text = None
+    used_encoding = None
+    
+    for encoding in encodings:
+        try:
+            decoded_text = raw_data.decode(encoding)
+            used_encoding = encoding
+            print(f"✓ 成功使用 {encoding} 解码")
+            break
+        except UnicodeDecodeError:
+            print(f"✗ {encoding} 解码失败")
+            continue
+    
+    if decoded_text is None:
+        # 如果都失败，使用UTF-8忽略错误
+        decoded_text = raw_data.decode('utf-8', errors='ignore')
+        used_encoding = 'utf-8 (忽略错误)'
+        print("⚠ 使用UTF-8忽略错误解码，部分数据可能丢失")
+    
+    # 保存为UTF-8
+    with open('data_fixed.json', 'w', encoding='utf-8') as f:
+        f.write(decoded_text)
+    
+    print(f"\n✓ 已保存为 data_fixed.json")
+    print(f"✓ 原始编码: {used_encoding}")
+    print(f"✓ 文件大小: {os.path.getsize('data_fixed.json')} 字节")
+    
+    # 验证JSON格式
+    import json
+    try:
+        with open('data_fixed.json', 'r', encoding='utf-8') as f:
+            json.load(f)
+        print("✓ JSON格式验证通过")
+    except json.JSONDecodeError as e:
+        print(f"✗ JSON格式错误: {e}")
+
+if __name__ == '__main__':
+    fix_encoding()</code></pre>
+            
+            <div class="code-header">bash</div>
+            <pre class="code-block"><code>python fix_encoding.py
+
+# 使用修复后的文件
+python manage.py loaddata data_fixed.json</code></pre>
+            
+            <h3>方案D：使用记事本手动转换（最简单）</h3>
+            <ol>
+                <li>用记事本打开 <code>data.json</code></li>
+                <li>点击"文件" → "另存为"</li>
+                <li>在编码下拉框中选择 <strong>UTF-8</strong></li>
+                <li>保存为 <code>data_fixed.json</code></li>
+            </ol>
+            
+            <div class="tip">
+                <strong>验证编码：</strong>使用VS Code打开文件，右下角会显示当前编码。如果不是UTF-8，点击编码 → "通过编码保存" → 选择UTF-8。
+            </div>
+        </div>
+
+        <!-- 步骤5 -->
+        <div class="section" id="step5">
+            <span class="anchor"></span>
+            <h2>步骤5：导出数据</h2>
+            
+            <div class="step">
+                <span class="step-number">5</span>
+                <strong>从SQLite导出数据</strong>
+            </div>
+            
+            <div class="warning">
+                确保此时Django配置仍然是SQLite！在导出前不要修改settings.py为MySQL配置。
+            </div>
+            
+            <div class="code-header">bash</div>
+            <pre class="code-block"><code># 完整导出（包含所有数据）
+python manage.py dumpdata --natural-primary --natural-foreign --indent 2 > data.json
+
+# 排除系统自动生成的表（推荐）
+python manage.py dumpdata \
+    --natural-primary \
+    --natural-foreign \
+    --exclude contenttypes \
+    --exclude auth.permission \
+    --exclude admin.logentry \
+    --exclude sessions.session \
+    --indent 2 > data.json
+
+# 仅导出特定app数据
+python manage.py dumpdata myapp1 myapp2 --indent 2 > data.json</code></pre>
+            
+            <div class="note">
+                <strong>参数说明：</strong>
+                <ul>
+                    <li><code>--natural-primary</code>：使用自然主键，避免ID冲突</li>
+                    <li><code>--natural-foreign</code>：使用自然外键，保持关联关系</li>
+                    <li><code>--indent 2</code>：格式化JSON，便于阅读和调试</li>
+                    <li><code>--exclude</code>：排除不需要迁移的表</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 步骤6 -->
+        <div class="section" id="step6">
+            <span class="anchor"></span>
+            <h2>步骤6：导入数据</h2>
+            
+            <div class="step">
+                <span class="step-number">6</span>
+                <strong>导入到MySQL</strong>
+            </div>
+            
+            <div class="warning">
+                此时应该已经修改settings.py为MySQL配置，并且已经创建了数据库表结构（执行过migrate）。
+            </div>
+            
+            <h3>创建表结构</h3>
+            <div class="code-header">bash</div>
+            <pre class="code-block"><code># 确保配置已改为MySQL
+# 然后创建表结构
+python manage.py migrate
+
+# 如果出现MySQL版本错误，请升级MySQL到8.0+</code></pre>
+            
+            <h3>导入数据</h3>
+            <div class="code-header">bash</div>
+            <pre class="code-block"><code># 使用修复后的UTF-8文件导入
+python manage.py loaddata data_fixed.json
+
+# 或者如果原始文件就是UTF-8
+python manage.py loaddata data.json
+
+# 导入特定文件
+python manage.py loaddata mydata.json</code></pre>
+            
+            <div class="tip">
+                <strong>导入顺序：</strong>如果有多个数据文件，按依赖顺序导入（先导入无依赖的，再导入有外键依赖的）。
+            </div>
+        </div>
+
+        <!-- 步骤7 -->
+        <div class="section" id="step7">
+            <span class="anchor"></span>
+            <h2>步骤7：验证迁移</h2>
+            
+            <div class="step">
+                <span class="step-number">7</span>
+                <strong>验证数据完整性</strong>
+            </div>
+            
+            <div class="code-header">bash</div>
+            <pre class="code-block"><code># 1. 检查数据库连接
+python manage.py dbshell
+# 在MySQL shell中执行：
+# SHOW TABLES;
+# SELECT COUNT(*) FROM auth_user;
+
+# 2. 检查数据量
+python manage.py shell
+>>> from myapp.models import MyModel
+>>> MyModel.objects.count()  # 应该与SQLite中相同
+
+# 3. 运行测试
+python manage.py test
+
+# 4. 启动开发服务器测试
+python manage.py runserver
+# 访问 http://127.0.0.1:8000/admin 检查数据</code></pre>
+            
+            <h3>创建超级用户（如果丢失）</h3>
+            <div class="code-header">bash</div>
+            <pre class="code-block"><code># 如果admin数据没有迁移，重新创建超级用户
+python manage.py createsuperuser</code></pre>
+        </div>
+
+        <!-- 常见问题 -->
+        <div class="section" id="mysql-version">
+            <span class="anchor"></span>
+            <h2>常见问题：MySQL版本</h2>
+            
+            <div class="danger">
+                <strong>错误信息：</strong>
+                <pre>django.db.utils.NotSupportedError: MySQL 8 or later is required (found 5.7.26).</pre>
+            </div>
+            
+            <h3>解决方案</h3>
+            <p><strong>必须升级MySQL到8.0+</strong>，Django 4.2+不再支持MySQL 5.7。</p>
+            
+            <div class="code-header">升级步骤</div>
+            <pre class="code-block"><code># 1. 备份现有MySQL数据
+mysqldump -u root -p --all-databases > mysql_backup.sql
+
+# 2. 下载并安装MySQL 8.0
+# https://dev.mysql.com/downloads/installer/
+
+# 3. 恢复数据
+mysql -u root -p < mysql_backup.sql
+
+# 4. 验证版本
+mysql --version
+# 应该显示 8.0.x</code></pre>
+            
+            <p>如果不想升级MySQL，可以降级Django到3.2版本（最后一个支持MySQL 5.7的版本）：</p>
+            <div class="code-header">bash</div>
+            <pre class="code-block"><code>pip install "Django>=3.2,<4.0"</code></pre>
+        </div>
+
+        <div class="section" id="encoding">
+            <span class="anchor"></span>
+            <h2>常见问题：编码问题详解</h2>
+            
+            <div class="danger">
+                <strong>错误信息：</strong>
+                <pre>UnicodeDecodeError: 'utf-8' codec can't decode byte 0xc0 in position 1283: invalid start byte</pre>
+            </div>
+            
+            <h3>问题原因</h3>
+            <ul>
+                <li>Windows系统默认使用GBK编码</li>
+                <li>Python输出重定向到文件时使用了系统默认编码</li>
+                <li>Django的loaddata期望UTF-8编码</li>
+            </ul>
+            
+            <h3>完整解决方案</h3>
+            <p>参考 <a href="#step4">步骤4：处理编码问题</a> 中的4种方案，推荐顺序：</p>
+            <ol>
+                <li>方案B：Python脚本导出（最可靠）</li>
+                <li>方案A：设置环境变量后导出</li>
+                <li>方案D：记事本手动转换（最简单）</li>
+                <li>方案C：修复脚本（应急使用）</li>
+            </ol>
+            
+            <h3>预防措施</h3>
+            <div class="code-header">永久设置UTF-8（Windows）</div>
+            <pre class="code-block"><code># 在系统环境变量中添加 PYTHONIOENCODING=utf-8
+# 控制面板 → 系统 → 高级系统设置 → 环境变量 → 新建系统变量
+
+# 或者在PowerShell配置文件中添加
+$PROFILE  # 查看配置文件路径
+# 在文件中添加：$env:PYTHONIOENCODING="utf-8"</code></pre>
+        </div>
+
+        <div class="section" id="foreign-key">
+            <span class="anchor"></span>
+            <h2>常见问题：外键约束错误</h2>
+            
+            <div class="danger">
+                <strong>错误信息：</strong>
+                <pre>IntegrityError: (1452, 'Cannot add or update a child row: a foreign key constraint fails')</pre>
+            </div>
+            
+            <h3>解决方案</h3>
+            <div class="code-header">导出时排除contenttypes</div>
+            <pre class="code-block"><code># 这些表会自动生成，不应导出导入
+python manage.py dumpdata \
+    --exclude contenttypes \
+    --exclude auth.permission \
+    --exclude admin.logentry \
+    --exclude sessions.session \
+    > data.json</code></pre>
+            
+            <div class="code-header">临时禁用外键检查（MySQL）</div>
+            <pre class="code-block"><code># 在导入前登录MySQL禁用外键检查
+mysql -u django_user -p django_db
+
+SET FOREIGN_KEY_CHECKS = 0;
+-- 然后执行 loaddata
+SET FOREIGN_KEY_CHECKS = 1;</code></pre>
+        </div>
+
+        <div class="section" id="other">
+            <span class="anchor"></span>
+            <h2>其他常见问题</h2>
+            
+            <h3>1. mysqlclient安装失败</h3>
+            <div class="code-header">解决方案</div>
+            <pre class="code-block"><code># Windows: 安装Visual C++ Build Tools
+# https://visualstudio.microsoft.com/visual-cpp-build-tools/
+
+# 或使用预编译版本
+pip install mysqlclient-1.4.6-cp38-cp38-win_amd64.whl  # 下载对应版本
+
+# 或使用pymysql替代
+pip install pymysql
+# 在项目__init__.py中添加：
+import pymysql
+pymysql.install_as_MySQLdb()</code></pre>
+            
+            <h3>2. 数据丢失或损坏</h3>
+            <div class="code-header">检查清单</div>
+            <pre class="code-block"><code># 1. 对比数据量
+python manage.py shell
+>>> from django.contrib.auth.models import User
+>>> User.objects.count()  # SQLite和MySQL应该相同
+
+# 2. 检查特定记录
+>>> User.objects.first().__dict__
+
+# 3. 如果有丢失，检查JSON文件
+python -c "
+import json
+with open('data.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+    print(f'总记录数: {len(data)}')
+    users = [x for x in data if x['model'] == 'auth.user']
+    print(f'用户记录数: {len(users)}')
+"</code></pre>
+            
+            <h3>3. 字符集错误</h3>
+            <div class="code-header">解决方案</div>
+            <pre class="code-block"><code># 修改数据库字符集
+ALTER DATABASE django_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+# 修改表字符集
+ALTER TABLE myapp_mymodel CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</code></pre>
+        </div>
+
+        <!-- 高级配置 -->
+        <div class="section" id="production">
+            <span class="anchor"></span>
+            <h2>生产环境配置</h2>
+            
+            <h3>连接池配置</h3>
+            <div class="code-header">settings.py</div>
+            <pre class="code-block"><code>DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_db',
+        'USER': 'django_user',
+        'PASSWORD': os.environ.get('DB_PASSWORD'),  # 从环境变量读取
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+        'CONN_MAX_AGE': 600,  # 连接持久化10分钟
+        'CONN_HEALTH_CHECKS': True,  # Django 4.1+ 健康检查
+    }
+}</code></pre>
+            
+            <h3>安全建议</h3>
+            <ul>
+                <li>数据库密码使用环境变量，不要硬编码</li>
+                <li>使用专用数据库用户，不要使用root</li>
+                <li>限制数据库用户权限（仅需要的数据库）</li>
+                <li>启用SSL连接（生产环境）</li>
+                <li>定期备份数据库</li>
+            </ul>
+        </div>
+
+        <div class="section" id="tools">
+            <span class="anchor"></span>
+            <h2>迁移工具推荐</h2>
+            
+            <table>
+                <tr>
+                    <th>工具</th>
+                    <th>适用场景</th>
+                    <th>优点</th>
+                    <th>命令</th>
+                </tr>
+                <tr>
+                    <td>dumpdata/loaddata</td>
+                    <td>标准迁移</td>
+                    <td>Django内置，跨数据库兼容</td>
+                    <td>python manage.py dumpdata/loaddata</td>
+                </tr>
+                <tr>
+                    <td>sqlite3-to-mysql</td>
+                    <td>大数据量</td>
+                    <td>直接转换，速度快</td>
+                    <td>sqlite3mysql -f db.sqlite3 -d mysql_db</td>
+                </tr>
+                <tr>
+                    <td>MySQL Workbench</td>
+                    <td>可视化迁移</td>
+                    <td>图形界面，易于操作</td>
+                    <td>GUI工具</td>
+                </tr>
+                <tr>
+                    <td>Navicat</td>
+                    <td>商业工具</td>
+                    <td>功能强大，支持多种数据库</td>
+                    <td>GUI工具</td>
+                </tr>
+            </table>
+            
+            <div class="code-header">sqlite3-to-mysql使用</div>
+            <pre class="code-block"><code># 安装
+pip install sqlite3-to-mysql
+
+# 基本用法
+sqlite3mysql -f db.sqlite3 -d django_db -u django_user -p
+
+# 指定主机和端口
+sqlite3mysql -f db.sqlite3 -h localhost -P 3306 -d django_db -u django_user --mysql-password your_password
+
+# 仅特定表
+sqlite3mysql -f db.sqlite3 -d django_db -u django_user -t table1 table2 table3</code></pre>
+        </div>
+
+        <!-- 总结 -->
+        <div class="section">
+            <h2>迁移检查清单</h2>
+            
+            <div class="tip">
+                <strong>完成迁移后，请确认以下事项：</strong>
+                <ul>
+                    <li>☐ 所有数据表已创建</li>
+                    <li>☐ 数据记录数与SQLite一致</li>
+                    <li>☐ 外键关系正确</li>
+                    <li>☐ 中文和特殊字符显示正常</li>
+                    <li>☐ 应用程序功能正常</li>
+                    <li>☐ 已删除或备份db.sqlite3</li>
+                    <li>☐ 已更新生产环境配置</li>
+                </ul>
+            </div>
+            
+            <div class="note">
+                <strong>需要帮助？</strong>
+                <p>如果在迁移过程中遇到问题，请检查：</p>
+                <ol>
+                    <li>MySQL版本是否为8.0+</li>
+                    <li>数据文件是否为UTF-8编码</li>
+                    <li>数据库字符集是否为utf8mb4</li>
+                    <li>用户权限是否正确</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section" style="text-align: center; color: #7f8c8d;">
+            <p>Django SQLite 到 MySQL 迁移指南</p>
+            <p>生成时间: 2026-03-10 | 适用于 Django 3.2+ 和 MySQL 8.0+</p>
+        </div>
+    </main>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 高亮当前菜单项
+        const sections = document.querySelectorAll('.section');
+        const menuItems = document.querySelectorAll('.menu-list a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 100)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // 代码复制功能
+        document.querySelectorAll('pre').forEach(block => {
+            const button = document.createElement('button');
+            button.textContent = '复制';
+            button.style.cssText = `
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                padding: 5px 10px;
+                background: #34495e;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 12px;
+            `;
+            
+            button.addEventListener('click', () => {
+                const code = block.querySelector('code').textContent;
+                navigator.clipboard.writeText(code);
+                button.textContent = '已复制!';
+                setTimeout(() => button.textContent = '复制', 2000);
+            });
+            
+            block.style.position = 'relative';
+            block.appendChild(button);
+        });
+    </script>
+</body>
+</html>
